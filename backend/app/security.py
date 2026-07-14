@@ -12,14 +12,17 @@ from app.database import get_db
 from app.models.models import User
 from app.schemas.schemas import TokenData
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__truncate_error=False)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password[:72], hashed_password)
+    # Asegurar que el string no ocupe más de 72 bytes en UTF-8
+    safe_password = plain_password.encode('utf-8')[:72].decode('utf-8', 'ignore')
+    return pwd_context.verify(safe_password, hashed_password)
 
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password[:72])
+    safe_password = password.encode('utf-8')[:72].decode('utf-8', 'ignore')
+    return pwd_context.hash(safe_password)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
