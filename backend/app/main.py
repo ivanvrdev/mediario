@@ -12,7 +12,7 @@ app = FastAPI(title="Asistente Médico API", version="3.0.0")
 # CORS middleware para React local (Vite)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # En producción reemplazar con ["http://localhost:5173", "https://misitio.com"]
+    allow_origins=["http://localhost:5173", "https://mediario-frontend.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
