@@ -28,7 +28,7 @@ function NewPatientModal({ onClose, onCreated }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-surface-container border border-outline-variant/30 rounded-2xl p-lg shadow-2xl w-full max-w-[520px] mx-4 animate-fadeIn">
+      <div className="bg-surface-container border border-outline-variant/30 rounded-2xl p-md sm:p-lg shadow-2xl w-full max-w-[520px] mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar animate-fadeIn">
         <header className="mb-lg flex items-center justify-between">
           <div>
             <h2 className="font-headline-md text-headline-md text-primary">Registro de Paciente</h2>
@@ -81,7 +81,7 @@ function PatientContextModal({ patient, lastSummary, onClose }) {
   if (!patient) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-surface-container border border-outline-variant/30 rounded-2xl p-lg shadow-2xl w-full max-w-[600px] mx-4 animate-fadeIn relative">
+      <div className="bg-surface-container border border-outline-variant/30 rounded-2xl p-md sm:p-lg shadow-2xl w-full max-w-[600px] mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar animate-fadeIn relative">
         <button onClick={onClose} className="absolute top-4 right-4 p-xs hover:bg-surface-variant rounded-full transition-colors text-outline-variant">
           <span className="material-symbols-outlined">close</span>
         </button>
@@ -129,7 +129,7 @@ function EditConsultationModal({ consultation, onClose, onSaved }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-surface-container border border-outline-variant/30 rounded-2xl p-lg shadow-2xl w-full max-w-[560px] mx-4">
+      <div className="bg-surface-container border border-outline-variant/30 rounded-2xl p-md sm:p-lg shadow-2xl w-full max-w-[560px] mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
         <header className="mb-lg flex items-center justify-between">
           <div>
             <h2 className="font-headline-md text-headline-md text-primary">Datos de la Consulta</h2>
@@ -192,7 +192,7 @@ function SessionsHistoryModal({ patientId, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-surface-container border border-outline-variant/30 rounded-2xl p-lg shadow-2xl w-full max-w-[800px] h-[80vh] flex flex-col mx-4">
+      <div className="bg-surface-container border border-outline-variant/30 rounded-2xl p-md sm:p-lg shadow-2xl w-full max-w-[800px] max-h-[90vh] h-[80vh] flex flex-col mx-4">
         <header className="mb-md flex items-center justify-between shrink-0">
           <div>
             <h2 className="font-headline-md text-headline-md text-primary">Historial de Sesiones</h2>
@@ -281,20 +281,20 @@ function ChatBubble({ msg }) {
   }
 
   return (
-    <div className={`flex gap-md w-full items-start ${isUser ? 'justify-end' : ''}`}>
+    <div className={`flex gap-xs sm:gap-md w-full items-start ${isUser ? 'justify-end' : ''}`}>
       {!isUser && (
-        <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-primary text-[20px]">psychology</span>
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+          <span className="material-symbols-outlined text-primary text-[18px] sm:text-[20px]">psychology</span>
         </div>
       )}
-      <div className={`max-w-[80%] p-md ${isUser ? 'bg-primary/10 border border-primary/40 rounded-2xl rounded-tr-none' : 'glass-panel rounded-2xl rounded-tl-none'}`}>
-        <div className="prose prose-invert prose-sm max-w-none text-on-surface text-body-lg leading-relaxed">
+      <div className={`max-w-[88%] sm:max-w-[80%] p-sm sm:p-md ${isUser ? 'bg-primary/10 border border-primary/40 rounded-2xl rounded-tr-none' : 'glass-panel rounded-2xl rounded-tl-none'}`}>
+        <div className="prose prose-invert prose-sm max-w-none text-on-surface text-body-md sm:text-body-lg leading-relaxed overflow-x-auto">
           <ReactMarkdown>{displayContent}</ReactMarkdown>
         </div>
       </div>
       {isUser && (
-        <div className="w-10 h-10 rounded-full bg-secondary-container/20 border border-secondary-container/30 flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-secondary text-[20px]">medical_information</span>
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary-container/20 border border-secondary-container/30 flex items-center justify-center shrink-0">
+          <span className="material-symbols-outlined text-secondary text-[18px] sm:text-[20px]">medical_information</span>
         </div>
       )}
     </div>
@@ -322,6 +322,7 @@ export default function Chat() {
   const [doctorName, setDoctorName] = useState('');
   const [lastSummary, setLastSummary] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const messagesEndRef = useRef(null);
   const mediaRecorderRef = useRef(null);
@@ -550,12 +551,33 @@ export default function Chat() {
   const filteredPatients = patients;
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden relative">
+      {/* ── Mobile Sidebar Overlay ── */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 md:hidden animate-fadeIn"
+        />
+      )}
+
       {/* ── Sidebar ── */}
-      <aside className="w-[280px] h-full bg-surface-container border-r border-outline-variant/30 flex flex-col p-md z-20 shrink-0">
-        <div className="mb-lg flex items-center gap-sm">
-          <img src="/logo.png" alt="Mediario Logo" className="w-10 h-10 object-cover rounded-full shrink-0" />
-          <h1 className="text-title-lg font-title-lg text-on-surface">Mediario</h1>
+      <aside
+        className={`fixed md:static inset-y-0 left-0 z-40 w-[280px] h-full bg-surface-container border-r border-outline-variant/30 flex flex-col p-md shrink-0 transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
+        <div className="mb-lg flex items-center justify-between">
+          <div className="flex items-center gap-sm">
+            <img src="/logo.png" alt="Mediario Logo" className="w-10 h-10 object-cover rounded-full shrink-0" />
+            <h1 className="text-title-lg font-title-lg text-on-surface">Mediario</h1>
+          </div>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="md:hidden p-xs hover:bg-surface-variant rounded-full text-outline-variant transition-colors"
+            title="Cerrar menú"
+          >
+            <span className="material-symbols-outlined">close</span>
+          </button>
         </div>
 
         <div className="mb-sm px-xs">
@@ -564,7 +586,10 @@ export default function Chat() {
 
         <nav className="flex-1 flex flex-col gap-xs overflow-y-auto custom-scrollbar">
           <button
-            onClick={() => setShowNewPatient(true)}
+            onClick={() => {
+              setShowNewPatient(true);
+              setSidebarOpen(false);
+            }}
             className="flex items-center gap-sm bg-primary text-on-primary font-body-md text-body-md px-sm py-xs rounded-xl hover:opacity-90 transition-all scale-98-active mb-md"
           >
             <span className="material-symbols-outlined">add</span>
@@ -587,7 +612,10 @@ export default function Chat() {
           {filteredPatients.map((p) => (
             <button
               key={p.id}
-              onClick={() => navigate(`/chat/${p.id}`)}
+              onClick={() => {
+                navigate(`/chat/${p.id}`);
+                setSidebarOpen(false);
+              }}
               className={`flex items-center gap-sm w-full text-left px-sm py-xs rounded-lg transition-colors ${p.id === patientId ? 'sidebar-active' : 'text-on-surface-variant hover:bg-surface-container-high'}`}
             >
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
@@ -622,44 +650,54 @@ export default function Chat() {
       </aside>
 
       {/* ── Main Content ── */}
-      <main className="flex-1 flex flex-col relative overflow-hidden">
+      <main className="flex-1 flex flex-col relative overflow-hidden w-full">
         {/* Top Bar */}
-        <header className="sticky top-0 w-full h-16 flex items-center justify-between px-lg bg-surface border-b border-outline-variant/30 z-10 shrink-0">
-          <div className="flex items-center gap-md">
+        <header className="sticky top-0 w-full h-16 flex items-center justify-between px-sm sm:px-md md:px-lg bg-surface border-b border-outline-variant/30 z-10 shrink-0">
+          <div className="flex items-center gap-xs sm:gap-md overflow-hidden">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-xs text-on-surface hover:bg-surface-variant rounded-lg md:hidden shrink-0"
+              title="Abrir menú de pacientes"
+            >
+              <span className="material-symbols-outlined text-[24px]">menu</span>
+            </button>
+
             {activePatient ? (
-              <div>
+              <div className="overflow-hidden">
                 <div className="flex items-center gap-xs">
-                  <h2 className="font-headline-md text-headline-md font-bold text-on-surface leading-tight">
+                  <h2 className="font-headline-md text-title-lg sm:text-headline-md font-bold text-on-surface leading-tight truncate max-w-[140px] sm:max-w-[240px] md:max-w-none">
                     {activePatient.full_name}
                   </h2>
-                  <button onClick={() => setShowContextModal(true)} className="w-8 h-8 flex items-center justify-center text-primary bg-primary/10 rounded-full hover:bg-primary/20 transition-colors" title="Información del paciente">
-                    <span className="material-symbols-outlined text-[18px]">info</span>
+                  <button onClick={() => setShowContextModal(true)} className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-primary bg-primary/10 rounded-full hover:bg-primary/20 transition-colors shrink-0" title="Información del paciente">
+                    <span className="material-symbols-outlined text-[16px] sm:text-[18px]">info</span>
                   </button>
                 </div>
                 {activePatient.dni && (
-                  <p className="text-label-sm text-outline">DNI: {activePatient.dni}</p>
+                  <p className="text-label-sm text-outline truncate">DNI: {activePatient.dni}</p>
                 )}
               </div>
             ) : (
-              <h2 className="font-headline-md text-headline-md font-bold text-on-surface">Seleccione un paciente</h2>
+              <h2 className="font-headline-md text-title-lg sm:text-headline-md font-bold text-on-surface truncate">Seleccione un paciente</h2>
             )}
           </div>
-          <div className="flex items-center gap-sm">
+
+          <div className="flex items-center gap-xs sm:gap-sm shrink-0">
             {activePatient && (
               <>
                 <button
                   onClick={() => setShowSessionsHistory(true)}
-                  className="flex items-center gap-xs text-on-surface-variant hover:text-primary hover:bg-surface-variant px-sm py-xs rounded-lg transition-colors"
+                  className="flex items-center gap-xs text-on-surface-variant hover:text-primary hover:bg-surface-variant p-xs sm:px-sm sm:py-xs rounded-lg transition-colors"
                   title="Sesiones"
                 >
-                  <span className="material-symbols-outlined">history</span>
+                  <span className="material-symbols-outlined text-[20px] sm:text-[24px]">history</span>
                   <span className="text-body-md hidden md:block">Sesiones</span>
                 </button>
                 <button
                   onClick={() => navigate(`/patient/${patientId}/files`)}
-                  className="flex items-center gap-xs text-on-surface-variant hover:text-primary hover:bg-surface-variant px-sm py-xs rounded-lg transition-colors"
+                  className="flex items-center gap-xs text-on-surface-variant hover:text-primary hover:bg-surface-variant p-xs sm:px-sm sm:py-xs rounded-lg transition-colors"
+                  title="Archivos"
                 >
-                  <span className="material-symbols-outlined">folder</span>
+                  <span className="material-symbols-outlined text-[20px] sm:text-[24px]">folder</span>
                   <span className="text-body-md hidden md:block">Archivos</span>
                 </button>
               </>
@@ -668,20 +706,20 @@ export default function Chat() {
         </header>
 
         {/* Chat Messages */}
-        <section className="flex-1 overflow-y-auto py-lg px-xl custom-scrollbar flex flex-col">
-          <div className="max-w-[960px] mx-auto w-full flex flex-col gap-lg pb-40 flex-1">
+        <section className="flex-1 overflow-y-auto py-md sm:py-lg px-xs sm:px-md md:px-xl custom-scrollbar flex flex-col">
+          <div className="max-w-[960px] mx-auto w-full flex flex-col gap-md sm:gap-lg pb-36 sm:pb-40 flex-1">
             {!patientId && (
-              <div className="flex flex-col items-center justify-center h-full mt-24 text-center">
-                <div className="w-24 h-24 rounded-full border-2 border-primary/20 flex items-center justify-center mb-md overflow-hidden shadow-lg">
+              <div className="flex flex-col items-center justify-center h-full my-auto text-center px-sm">
+                <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full border-2 border-primary/20 flex items-center justify-center mb-md overflow-hidden shadow-lg">
                   <img src="/logo.png" alt="Mediario Logo" className="w-full h-full object-cover" />
                 </div>
                 <h3 className="font-headline-md text-headline-md text-on-surface mb-sm">Bienvenido a Mediario</h3>
-                <p className="text-body-lg text-outline-variant whitespace-nowrap mx-auto">Seleccione un paciente en la barra lateral para comenzar a chatear con el asistente de IA.</p>
+                <p className="text-body-md sm:text-body-lg text-outline-variant max-w-md mx-auto">Seleccione un paciente en la barra lateral para comenzar a chatear con el asistente de IA.</p>
               </div>
             )}
 
             {patientId && messages.length === 0 && !chatLoading && (
-              <div className="flex flex-col items-center justify-center mt-16 text-center">
+              <div className="flex flex-col items-center justify-center mt-16 text-center px-sm">
                 <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-md">
                   <span className="material-symbols-outlined text-primary text-4xl">psychology</span>
                 </div>
@@ -692,11 +730,11 @@ export default function Chat() {
             {messages.map((msg, i) => <ChatBubble key={i} msg={msg} />)}
 
             {chatLoading && (
-              <div className="flex gap-md items-start">
-                <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-primary text-[20px]">psychology</span>
+              <div className="flex gap-xs sm:gap-md items-start">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-primary text-[18px] sm:text-[20px]">psychology</span>
                 </div>
-                <div className="glass-panel rounded-2xl rounded-tl-none p-md flex items-center gap-sm">
+                <div className="glass-panel rounded-2xl rounded-tl-none p-sm sm:p-md flex items-center gap-sm">
                   <div className="flex gap-1">
                     <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -713,59 +751,59 @@ export default function Chat() {
 
         {/* Input Bar */}
         {patientId && (
-          <footer className="absolute bottom-0 left-0 w-full p-lg bg-gradient-to-t from-background via-background/95 to-transparent">
+          <footer className="absolute bottom-0 left-0 w-full p-2 sm:p-md md:p-lg bg-gradient-to-t from-background via-background/95 to-transparent">
             <div className="max-w-[960px] mx-auto">
               {fileUploading && (
-                <div className="mb-sm flex items-center gap-xs text-body-md text-primary px-sm">
+                <div className="mb-xs sm:mb-sm flex items-center gap-xs text-body-md text-primary px-sm">
                   <span className="material-symbols-outlined text-[18px] animate-pulse">upload_file</span>
                   Procesando archivo con IA...
                 </div>
               )}
               {recording && (
-                <div className="mb-sm flex items-center gap-xs text-body-md text-error px-sm">
+                <div className="mb-xs sm:mb-sm flex items-center gap-xs text-body-md text-error px-sm">
                   <span className="w-2 h-2 rounded-full bg-error animate-pulse inline-block" />
                   Grabando... Haz clic en el micrófono para detener
                 </div>
               )}
-              <div className="glass-panel rounded-2xl flex items-center gap-sm p-sm shadow-xl">
+              <div className="glass-panel rounded-2xl flex items-center gap-xs sm:gap-sm p-xs sm:p-sm shadow-xl">
                 {/* File upload */}
                 <input ref={fileInputRef} type="file" accept=".pdf,.jpg,.jpeg" onChange={handleFileUpload} className="hidden" />
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={fileUploading}
-                  className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-variant transition-colors text-outline-variant disabled:opacity-40"
+                  className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl hover:bg-surface-variant transition-colors text-outline-variant disabled:opacity-40 shrink-0"
                   title="Adjuntar archivo (PDF texto o JPG escaneado)"
                 >
-                  <span className="material-symbols-outlined">attach_file</span>
+                  <span className="material-symbols-outlined text-[20px] sm:text-[24px]">attach_file</span>
                 </button>
 
                 <input
                   type="text"
-                  className="flex-1 bg-transparent border-none focus:ring-0 text-body-lg text-on-surface placeholder:text-outline/60 outline-none"
-                  placeholder="Escribe un mensaje o solicita un análisis..."
+                  className="flex-1 bg-transparent border-none focus:ring-0 text-sm sm:text-body-lg text-on-surface placeholder:text-outline/60 outline-none min-w-0"
+                  placeholder="Escribe un mensaje..."
                   value={inputMsg}
                   onChange={(e) => setInputMsg(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
                   disabled={chatLoading}
                 />
 
-                <div className="flex items-center gap-xs">
+                <div className="flex items-center gap-xs shrink-0">
                   {/* Mic / Stop Recording */}
                   <button
                     onClick={toggleRecording}
-                    className={`w-10 h-10 flex items-center justify-center rounded-xl transition-colors ${recording ? 'bg-error/20 text-error hover:bg-error/30' : 'hover:bg-surface-variant text-outline-variant'}`}
+                    className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl transition-colors ${recording ? 'bg-error/20 text-error hover:bg-error/30' : 'hover:bg-surface-variant text-outline-variant'}`}
                     title={recording ? 'Detener grabación' : 'Grabar audio de la consulta'}
                   >
-                    <span className="material-symbols-outlined">{recording ? 'stop_circle' : 'mic'}</span>
+                    <span className="material-symbols-outlined text-[20px] sm:text-[24px]">{recording ? 'stop_circle' : 'mic'}</span>
                   </button>
 
                   {/* Send */}
                   <button
                     onClick={sendMessage}
                     disabled={chatLoading || !inputMsg.trim()}
-                    className="bg-primary text-on-primary p-sm rounded-xl scale-98-active transition-all flex items-center justify-center disabled:opacity-40"
+                    className="bg-primary text-on-primary p-xs sm:p-sm rounded-xl scale-98-active transition-all flex items-center justify-center disabled:opacity-40 w-9 h-9 sm:w-10 sm:h-10"
                   >
-                    <span className="material-symbols-outlined">send</span>
+                    <span className="material-symbols-outlined text-[20px] sm:text-[24px]">send</span>
                   </button>
                 </div>
               </div>
